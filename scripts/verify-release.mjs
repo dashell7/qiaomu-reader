@@ -32,7 +32,7 @@ const pkg = readJson(path.join(root, "package.json"));
 const manifest = readJson(path.join(profile.outputDir, "manifest.json"));
 const versions = readJson(path.join(root, "versions.json"));
 
-requireCheck(manifest.id === "qiaomu-reader", `unexpected plugin id: ${manifest.id}`);
+requireCheck(manifest.id === "qiaomu-reader-english", `unexpected plugin id: ${manifest.id}`);
 requireCheck(pkg.version === manifest.version, "package.json and manifest.json versions differ");
 requireCheck(versions[manifest.version] === manifest.minAppVersion, "versions.json is missing the current release");
 
