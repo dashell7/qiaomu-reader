@@ -332,7 +332,8 @@ test("fixed-layout PDF pages show a reserved loading state instead of a blank sh
 test("runtime diagnostics use the maintained plugin identity", () => {
   const source = fs.readFileSync(new URL("../src/main.js", import.meta.url), "utf8");
   assert.doesNotMatch(source, /console\.(?:error|warn|log)\("Book Reader:/);
-  assert.match(source, /const VIEW_TYPE = "qiaomu-reader"/);
+  assert.match(source, /const VIEW_TYPE = "qiaomu-reader-english"/);
+  assert.match(source, /const LEGACY_VIEW_TYPE = "qiaomu-reader"/);
   assert.match(source, /const LIB_VIEW_TYPE = "qiaomu-reader-library"/);
   assert.match(source, /const QiaomuBookReader = class extends Plugin/);
   assert.match(source, /export default QiaomuBookReader/);
