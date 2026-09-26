@@ -81,7 +81,10 @@ function qiaomuReaderLocale() {
   return uiLanguageMetadata(qiaomuReaderLanguage).locale;
 }
 
-const VIEW_TYPE = "qiaomu-reader";
+const VIEW_TYPE = "qiaomu-reader-english";
+// The upstream plugin id is kept as a legacy view type so books opened through
+// notes written before the rename still resolve to the reader.
+const LEGACY_VIEW_TYPE = "qiaomu-reader";
 const AI_CHAT_VIEW_TYPE = "qiaomu-book-reader-ai-chat";
 // Settings defaults are assembled from concern-grouped fragments below. The
 // fragments are spread in the original key order, so the resulting object keeps
@@ -1597,6 +1600,9 @@ const QiaomuBookReader = class extends Plugin {
   _registerReaderViews() {
     const viewTypes = [
       [VIEW_TYPE, ReaderView],
+      // Leaves restored from a workspace saved before the rename still ask for
+      // the upstream view type, so it has to resolve to the same reader view.
+      [LEGACY_VIEW_TYPE, ReaderView],
       [LIB_VIEW_TYPE, LibraryView],
       [AI_CHAT_VIEW_TYPE, AiChatView],
     ];
@@ -1609,8 +1615,10 @@ const QiaomuBookReader = class extends Plugin {
       const book = params.book || "";
       void this.openBookAt(book, params.block, params.page, params.highlight, params.cfi);
     };
+    // Current deep links, plus the upstream and legacy ids, so notes written
+    // before the rename keep working.
+    this.registerObsidianProtocolHandler("qiaomu-reader-english", openBacklink);
     this.registerObsidianProtocolHandler("qiaomu-reader", openBacklink);
-    // Existing reading notes keep working after users switch to the new plugin ID.
     this.registerObsidianProtocolHandler("qiaomu-book-reader", openBacklink);
   }
   _registerReaderExtensions() {
@@ -7600,7 +7608,7 @@ function wrapBlockRange(block, start, end, hl) {
 }
 function _readerSettings(app) {
   const plugins = app && app.plugins && app.plugins.plugins;
-  const p = plugins ? plugins["qiaomu-reader"] : null;
+  const p = plugins ? (plugins["qiaomu-reader-english"] || plugins["qiaomu-reader"]) : null;
   return p && p.settings || {};
 }
 function noteTemplatePath(app, bookFile) {
@@ -8803,7 +8811,7 @@ function addBookFileMenu(app, menu, file) {
     const tree = explorer.view;
     if (tree && typeof tree.revealInFolder === "function") tree.revealInFolder(file);
   }));
-  app.workspace.trigger("file-menu", menu, file, "qiaomu-reader");
+  app.workspace.trigger("file-menu", menu, file, "qiaomu-reader-english");
   return menu;
 }
 // Path-keyed stores have to forget the removed book, otherwise stale progress,

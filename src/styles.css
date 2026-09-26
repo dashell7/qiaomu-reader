@@ -7,6 +7,7 @@
    responsive-token block under :root. */
 
 /* ── Reader shell, paginated flow, text selection ─────────────────────────── */
+.workspace-leaf-content[data-type="qiaomu-reader-english"] > .view-header,
 .workspace-leaf-content[data-type="qiaomu-reader"] > .view-header { display:none; }
 .view-content.qiaomu-reader-view { display:flex; flex-direction:column; height:100%; background:var(--qiaomu-reader-bg,var(--background-primary)); overflow:hidden; position:relative; padding:0; margin:0; box-sizing:border-box; }
 .qiaomu-reader-content img { max-width:100%; height:auto; display:block; margin:8px auto; }
